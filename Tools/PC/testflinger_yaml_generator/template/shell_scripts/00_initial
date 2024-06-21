@@ -41,15 +41,15 @@ wait_for_ssh() {{
 # The controller has to come from the ppa:checkbox-dev/beta
 # which is equivalent to the beta channel in the snap store
 # this way the versions will match
-echo "Installing checkbox in agent container"
-if [ "False" == False ]; then
-    # if we are testing using debs on the dut
-    CHECKBOX_CLI_CMD="checkbox-cli"
-else
-    # we are testing using snaps on the dut
-    CHECKBOX_CLI_CMD="checkbox.checkbox-cli"
-fi
-
+#echo "Installing checkbox in agent container"
+#if [ "False" == False ]; then
+#    # if we are testing using debs on the dut
+#    CHECKBOX_CLI_CMD="checkbox-cli"
+#else
+#    # we are testing using snaps on the dut
+#    CHECKBOX_CLI_CMD="checkbox.checkbox-cli"
+#fi
+CHECKBOX_CLI_CMD="checkbox-cli"
 
 echo
 echo "====== TARGET DEVICE CONNECTION INFO ======"
