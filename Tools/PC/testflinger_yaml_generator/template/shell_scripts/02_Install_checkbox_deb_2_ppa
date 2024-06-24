@@ -1,2 +1,2 @@
-_run sudo add-apt-repository ppa:checkbox-dev/edge -y
+_run sudo add-apt-repository ppa:checkbox-dev/beta -y
 
