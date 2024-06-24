@@ -11,14 +11,19 @@ is_valid_cid() {
     return 1
 }
 
-# get the inputs
+YAML_GENERATOR_DIR="oem-qa-tools/Tools/PC/testflinger_yaml_generator"
+YAML_GENERATOR_EXE="testflinger_yaml_generator.py"
+TESTFLINGER_EXE="testflinger-cli"
+JOB_YAML="job.yaml"
 YAML_GEN_CMD=""
+
+# get the inputs
 
 if ! is_valid_cid "$CID"; then
 	echo "Please provide a valid CID"
     exit 1
 fi
-YAML_GEN_CMD+=" -c $CID"
+YAML_GEN_CMD+="-c $CID -o $JOB_YAML"
 
 if [ -z "$PLAN" ]; then
 	echo "Please provide a test plan"
@@ -28,6 +33,32 @@ YAML_GEN_CMD+=" --testplan $PLAN"
 
 if [ -n "$EXCLUDE_TASK" ]; then
 	YAML_GEN_CMD+=" --excludeJobs $EXCLUDE_TASK"
+fi
+
+
+# Check if CID has available Queue
+
+queue_list=$(curl --url "https://testflinger.canonical.com/v1/agents/data" --request GET --header "Content-type: application/json" | jq -r '.[] | select(.identifier == "202405-34051")')
+
+# Get YAML generator
+
+
+cd "$WORKSPACE"
+rm -rf oem-qa-tools
+git clone -b pc-sanity-shared git@github.com:Artur-at-work/oem-qa-tools.git
+pushd "$YAML_GENERATOR_DIR"
+
+if [ "$SIDELOAD_PROVIDER_PATH" = "https://github.com/canonical/checkbox -b master" ];then
+	echo "_run sudo add-apt-repository ppa:checkbox-dev/beta -y" >> template/shell_scripts/03_install_checkbox_sideload
+    echo "_run sudo apt-get install -y plainbox-provider-pc-sanity" >> template/shell_scripts/03_install_checkbox_sideload
+elif [ -z "${$SIDELOAD_PROVIDER_PATH:-}" ]; then
+	echo "_run sudo apt-get purge plainbox-provider-pc-sanity" >> template/shell_scripts/05_remove_checkbox_sideload
+    echo "_run sudo rm -rf /var/tmp/checkbox-providers" >> template/shell_scripts/05_remove_checkbox_sideload
+else
+	# custom sideload repo
+    git_url="${SIDELOAD_PROVIDER_PATH%% -b*}"
+    git_branch="${SIDELOAD_PROVIDER_PATH##*-b }"
+    echo "_run sudo git -C /var/tmp/checkbox-providers clone $git_url -b $git_branch" >> template/shell_scripts/03_install_checkbox_sideload
 fi
 
 if [ -n "$CHECKBOX_PPAS" ]; then
@@ -49,6 +80,7 @@ fi
 
 if [ -n "$AUTO_CREATE_BUGS" ]; then
 	#TODO
+    echo "auto create bugs TRUE"
 fi
 
 if [ -n "$AUTO_CREATE_BUGS_ASSIGNEE" ]; then
@@ -65,22 +97,14 @@ if [ -z "$(command -v shellcheck)" ]; then
     sudo apt-get install -y shellcheck
 fi
 
-cd "$WORKSPACE"
 
-# Check if CID has available Queue
-# TODO: call api
 
-# Generate yaml for given CID
 
-YAML_GENERATOR_DIR="oem-qa-tools/Tools/PC/testflinger_yaml_generator"
-YAML_GENERATOR_EXE="testflinger_yaml_generator.py"
-TESTFLINGER_EXE="testflinger-cli"
-JOB_YAML="job.yaml"
 
-git clone -b pc-sanity-shared git@github.com:Artur-at-work/oem-qa-tools.git
 
-pushd "$YAML_GENERATOR_DIR"
-./"$YAML_GENERATOR_EXE"  -c "$CID" -o "$JOB_YAML" --testplan "$PLAN"
+
+#./"$YAML_GENERATOR_EXE"  -c "$CID" -o "$JOB_YAML" --testplan "$PLAN"
+./"$YAML_GENERATOR_EXE"  ${YAML_GEN_CMD}
 
 cp "$JOB_YAML" "$WORKSPACE"
 popd

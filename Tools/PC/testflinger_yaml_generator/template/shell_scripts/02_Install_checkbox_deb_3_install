@@ -1,4 +1,4 @@
 _run sudo apt-get update
-_run sudo DEBIAN_FRONTEND=noninteractive apt-get install checkbox-provider-base checkbox-ng checkbox-provider-resource checkbox-provider-certification-client -y
+_run sudo DEBIAN_FRONTEND=noninteractive apt-get install checkbox-provider-base checkbox-provider-resource checkbox-provider-certification-client -y
 _run checkbox-cli --version
 
