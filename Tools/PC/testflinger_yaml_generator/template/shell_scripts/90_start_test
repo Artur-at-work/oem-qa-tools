@@ -3,10 +3,22 @@ PYTHONUNBUFFERED=1 checkbox-cli remote "$DEVICE_IP" checkbox-launcher
 EXITCODE=$?
 echo EXITCODE: "$EXITCODE"
 echo "Copy submission tar file to artifacts folder"
+
+ls -alh /home/ubuntu/.local/share/checkbox-ng/
 mkdir -p artifacts
-mv /home/ubuntu/c3-local-submission.tar.xz artifacts/
-mv /home/ubuntu/.local/share/checkbox-ng/submission_2024-06-24T16.04.37.977320.html artifacts/
-mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/
+mv /home/ubuntu/.local/share/checkbox-ng/submission_*.html artifacts/submission.html
+mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/junit.xml
+#mv /home/ubuntu/.local/share/checkbox-ng/submission_*.xml artifacts/submission.xml
+#mv /home/ubuntu/.local/share/checkbox-ng/submission_*.xlsx artifacts/submission.xlsx
+mv /home/ubuntu/.local/share/checkbox-ng/submission_*.tar.xz artifacts/submission.tar.xz
+mv /home/ubuntu/c3-local-submission.tar.xz artifacts/submission.tar.xz
+tar -xf artifacts/submission.tar.xz submission.json
+mv submission.json artifacts/
+echo $(_run ubuntu-report show) > artifacts/ubuntu-report.log
+#cat ubutu-report.log | jq -r .OEM.DCD
+#mv ubuntu-report.log artifacts
+
+
 echo "Files in artifacts:"
 ls artifacts
 
