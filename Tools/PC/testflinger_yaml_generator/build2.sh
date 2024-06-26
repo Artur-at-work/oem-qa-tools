@@ -57,7 +57,7 @@ pushd "$YAML_GENERATOR_DIR"
 if [ "$SIDELOAD_PROVIDER_PATH" = "https://github.com/canonical/checkbox -b master" ];then
 	echo "_run sudo add-apt-repository ppa:checkbox-dev/beta -y" >> template/shell_scripts/03_install_checkbox_sideload
     echo "_run sudo apt-get install -y plainbox-provider-pc-sanity" >> template/shell_scripts/03_install_checkbox_sideload
-elif [ -z "${IDELOAD_PROVIDER_PATH:-}" ]; then
+elif [ -z "${SIDELOAD_PROVIDER_PATH:-}" ]; then
 	echo "_run sudo apt-get purge plainbox-provider-pc-sanity" >> template/shell_scripts/05_remove_checkbox_sideload
     echo "_run sudo rm -rf /var/tmp/checkbox-providers" >> template/shell_scripts/05_remove_checkbox_sideload
 else

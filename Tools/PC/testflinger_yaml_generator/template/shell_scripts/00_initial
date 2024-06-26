@@ -25,7 +25,7 @@ _run_in_bg() {{
 # shellcheck disable=SC1054,SC2086
 wait_for_ssh() {{
     loopcnt=0
-    until timeout 120 ssh $SSH_OPTS $TARGET_DEVICE_USERNAME@"$DEVICE_IP" /bin/true
+    until timeout 120 ssh -vvv $SSH_OPTS $TARGET_DEVICE_USERNAME@"$DEVICE_IP" /bin/true
     do
         echo "Testing to see if system is back up"
         loopcnt=$((loopcnt+1))
