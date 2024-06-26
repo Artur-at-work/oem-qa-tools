@@ -5,6 +5,72 @@ echo EXITCODE: "$EXITCODE"
 echo "Copy submission tar file to artifacts folder"
 
 ls -alh /home/ubuntu/.local/share/checkbox-ng/
+
+# collect oem-codename, platform-codename, test plan, image build number
+# submission tarball example: submission_[$PREFIX_SUBMISSION_TARBALL]_$(project)_[$(sub-group)]_$(platform-tag)_$(cid)_X$(image_no)_$(plan)_$(date).tar.xz
+# submission_autosanity_stella_cmit_fossa-dekisugi_202203-30071_X1978_pc-sanity-smoke-test_20220523-1517.tar.xz
+# [] means optional parameter
+
+_run wget -O /tmp/get-oem-info.sh https://git.launchpad.net/plainbox-provider-pc-sanity/plain/bin/get-oem-info.sh
+
+# get $(project)
+OEM_CODENAME=$(_run bash /tmp/get-oem-info.sh --oem-codename | sed -e 's/\./_/g')
+
+# get $(platform-tag)
+SERIES_CODENAME=$(_run lsb_release -c| awk '{{printf $2}}')
+if [ "$SERIES_CODENAME" == "focal" ]; then
+    ANIMAL_CODENAME="fossa"
+elif [ "$SERIES_CODENAME" == "jammy" ]; then
+    ANIMAL_CODENAME="jellyfish"
+elif [ "$SERIES_CODENAME" == "noble" ]; then
+    ANIMAL_CODENAME="numbat"
+fi
+
+PLATFORM_CODENAME=$(_run bash /tmp/get-oem-info.sh --platform-codename)
+if [ -z "$PLATFORM_CODENAME" ]; then
+    PLATFORM_CODENAME="$DEVICE_TAG"
+else
+    PLATFORM_CODENAME="$ANIMAL_CODENAME-$PLATFORM_CODENAME"
+fi
+
+# get $(image_no)
+IMAGE_NO=$(_run bash /tmp/get-oem-info.sh --get-build-no)
+
+# get $(plan)
+PLAN="$(grep -r 'unit = com.canonical.certification' ./checkbox_launcher | cut -d ':' -f 3)"
+
+# use Session Descrition as the Prefix
+PREFIX_SUBMISSION="$(grep 'session_desc' ./checkbox-launcher | cut -d'=' -f2- | awk '{$1=$1};1' | xargs)"
+CID="$(grep 'job_queue' ./checkbox-launcher | cut -d':' -f2- | awk '{$1=$1};1' | xargs)"
+# submit the submission.tar.xz to C3
+if [ -f artifacts/submission.tar.xz ]; then
+    tarball=artifacts/submission_"$PREFIX_SUBMISSION"_"$OEM_CODENAME"_"$PLATFORM_CODENAME"_"$CID"_X"$IMAGE_NO"_"$PLAN"_$(date +"%Y%m%d-%H%M").tar.xz
+    cp artifacts/submission.tar.xz "$tarball"
+    #if [ "[% env['UPLOAD_REPORT'] %]" = "true" ]; then
+        for _ in $(seq 1 5);do
+            #checkbox-cli submit -m "$PREFIX_SUBMISSION"_"$PLAN" "$SECURE_ID" "$tarball"
+            if checkbox-cli submit -m "$PREFIX_SUBMISSION"_"$PLAN" "$SECURE_ID" "$tarball" == 0; then
+                echo 'Upload to C3 succesfully'
+                break
+            else
+                sleep 3
+                echo 'Try to upload to C3 again'
+            fi
+        done
+    #fi
+
+    # Auto report bugs
+    #if [ ! -z [% env['CREATE_BUGS'] %] ]; then
+    #    SKU=[% env['CID'] %]
+    #    [ -n "[% env['DEVICE_SKU'] %]" ] && SKU=[% env['DEVICE_SKU'] %]
+    #    git clone --depth 1 lp:~oem-solutions-group/lyoncore/+git/oem-sanity
+    #    git -C oem-sanity rev-parse HEAD
+    #    bugs_assignee="[% env['AUTO_CREATE_BUGS_ASSIGNEE'] %]"
+    #    [ -n "$bugs_assignee" ] || bugs_assignee="[% env['BUILD_USER_ID'] %]"
+    #    bash oem-sanity/pc/auto-create-bug.sh "$OEM_CODENAME" "$PLATFORM_CODENAME" "$SKU" "$bugs_assignee" "$tarball"
+    #fi
+fi
+
 mkdir -p artifacts
 mv /home/ubuntu/.local/share/checkbox-ng/submission_*.html artifacts/submission.html
 mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/junit.xml

@@ -37,19 +37,7 @@ wait_for_ssh() {{
     done
 }}
 
-# Install the checkbox controller.
-# The controller has to come from the ppa:checkbox-dev/beta
-# which is equivalent to the beta channel in the snap store
-# this way the versions will match
-#echo "Installing checkbox in agent container"
-#if [ "False" == False ]; then
-#    # if we are testing using debs on the dut
-#    CHECKBOX_CLI_CMD="checkbox-cli"
-#else
-#    # we are testing using snaps on the dut
-#    CHECKBOX_CLI_CMD="checkbox.checkbox-cli"
-#fi
-CHECKBOX_CLI_CMD="checkbox-cli"
+CHECKBOX_CLI_CMD="checkbox-cli"  # assume deb
 
 echo
 echo "====== TARGET DEVICE CONNECTION INFO ======"
@@ -58,6 +46,11 @@ echo DEVICE_IP: $TARGET_DEVICE_USERNAME@"$DEVICE_IP"
 echo
 echo "==========================================="
 echo
+
+# TODO: if not installed on DUT, then version is the error message
+# If we always update the DUT's version, then agent gets the same from beta?
+# why checkout to specific version? is it for edge channel?
+
 CHECKBOX_VERSION=$(_run $CHECKBOX_CLI_CMD --version)
 echo "$CHECKBOX_VERSION"
 git clone --depth=1 https://github.com/canonical/hwcert-jenkins-tools.git > /dev/null
