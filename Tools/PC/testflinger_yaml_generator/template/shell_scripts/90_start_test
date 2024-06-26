@@ -80,7 +80,7 @@ mv /home/ubuntu/.local/share/checkbox-ng/submission_*.tar.xz artifacts/submissio
 mv /home/ubuntu/c3-local-submission.tar.xz artifacts/submission.tar.xz
 tar -xf artifacts/submission.tar.xz submission.json
 mv submission.json artifacts/
-"$(_run ubuntu-report show)" > artifacts/ubuntu-report.log
+#"$(_run ubuntu-report show)" > artifacts/ubuntu-report.log
 #cat ubutu-report.log | jq -r .OEM.DCD
 #mv ubuntu-report.log artifacts
 
