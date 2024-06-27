@@ -3,10 +3,11 @@ pwd
 ls -alh
 
 # get $(plan)
-PLAN="$(grep -r 'unit = com.canonical.certification' checkbox_launcher | cut -d ':' -f 3)"
+LAUNCHER_PATH="/home/ubuntu/checkbox-launcher"
+PLAN="$(grep -r 'unit = com.canonical.certification' $LAUNCHER_PATH | cut -d ':' -f 3)"
 # use Session Descrition as the Prefix
-PREFIX_SUBMISSION="$(grep 'session_desc' ./checkbox-launcher | cut -d'=' -f2- | awk '{$1=$1};1' | xargs)"
-CID="$(grep 'job_queue' ./checkbox-launcher | cut -d':' -f2- | awk '{$1=$1};1' | xargs)"
+PREFIX_SUBMISSION="$(grep 'session_desc' $LAUNCHER_PATH | cut -d'=' -f2- | awk '{print $1}' | xargs)"
+CID="$(grep 'job_queue' $LAUNCHER_PATH | cut -d':' -f2- | awk '{print $1}' | xargs)"
 
 find / -name checkbox-launcher
 
@@ -90,7 +91,7 @@ tar -xf artifacts/submission.tar.xz submission.json
 mv submission.json artifacts/
 _run ubuntu-report show > /tmp/ubuntu-report.log
 _get /tmp/ubuntu-report.log
-cat ubutu-report.log | jq -r .OEM.DCD
+jq -r .OEM.DCD < ubuntu-report.log
 mv ubuntu-report.log artifacts
 
 

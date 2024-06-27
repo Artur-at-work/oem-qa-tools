@@ -148,7 +148,7 @@ cat <<EOF > mail.title
 EOF
 
 # Create summary.html
-PROJECT=$(cat ubutu-report.log | jq -r .OEM.DCD)
+PROJECT=$(cat ubuntu-report.log | jq -r .OEM.DCD)
 mkdir -p artifacts
 cat <<EOF > artifacts/summary.html
 <html><head><style>table, th, td {font-family:Consolas,Ubuntu Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; border: 1px solid black;}</style></head><body>Owner: $OWNER<br>Jenkins build details:&nbsp;<a href=$BUILD_URL>$JOB_NAME/$BUILD_ID/</a><br><br><br>There is no result found because of the early fail within the build.<br>Usually this happens when a device join auto sanity for the first time, and the owener is trying to make it work.<br>Please check the build for more detail or contact the owner directly.<br><br></body></html>
