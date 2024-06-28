@@ -14,7 +14,18 @@ EXITCODE=$?
 echo EXITCODE: "$EXITCODE"
 echo "Copy submission tar file to artifacts folder"
 
-ls -alh /home/ubuntu/.local/share/checkbox-ng/
+
+mkdir -p artifacts
+mv /home/ubuntu/.local/share/checkbox-ng/submission_*.html artifacts/submission.html
+#mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/junit.xml
+mv /home/ubuntu/.local/share/checkbox-ng/submission_*.tar.xz artifacts/submission.tar.xz
+#mv /home/ubuntu/c3-local-submission.tar.xz artifacts/submission.tar.xz
+tar -xf artifacts/submission.tar.xz submission.json
+mv submission.json artifacts/
+#_run ubuntu-report show > /tmp/ubuntu-report.log
+#_get /tmp/ubuntu-report.log
+#jq -r .OEM.DCD < ubuntu-report.log
+#mv ubuntu-report.log artifacts
 
 # collect oem-codename, platform-codename, test plan, image build number
 # submission tarball example: submission_[$PREFIX_SUBMISSION_TARBALL]_$(project)_[$(sub-group)]_$(platform-tag)_$(cid)_X$(image_no)_$(plan)_$(date).tar.xz
@@ -66,20 +77,4 @@ if [ -f artifacts/submission.tar.xz ]; then
     #    bash oem-sanity/pc/auto-create-bug.sh "$OEM_CODENAME" "$PLATFORM_CODENAME" "$SKU" "$bugs_assignee" "$tarball"
     fi
 fi
-
-mkdir -p artifacts
-mv /home/ubuntu/.local/share/checkbox-ng/submission_*.html artifacts/submission.html
-mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/junit.xml
-mv /home/ubuntu/.local/share/checkbox-ng/submission_*.tar.xz artifacts/submission.tar.xz
-mv /home/ubuntu/c3-local-submission.tar.xz artifacts/submission.tar.xz
-tar -xf artifacts/submission.tar.xz submission.json
-mv submission.json artifacts/
-#_run ubuntu-report show > /tmp/ubuntu-report.log
-#_get /tmp/ubuntu-report.log
-#jq -r .OEM.DCD < ubuntu-report.log
-#mv ubuntu-report.log artifacts
-
-
-echo "Files in artifacts:"
-ls artifacts
 
