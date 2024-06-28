@@ -53,23 +53,12 @@ IMAGE_NO=$(_run bash /tmp/get-oem-info.sh --get-build-no)
 if [ -f artifacts/submission.tar.xz ]; then
     tarball=artifacts/submission_"$PREFIX_SUBMISSION"_"$OEM_CODENAME"_"$PLATFORM_CODENAME"_"$CID"_X"$IMAGE_NO"_"$PLAN"_$(date +"%Y%m%d-%H%M").tar.xz
     cp artifacts/submission.tar.xz "$tarball"
-    if [ "$UPLOAD_REPORT" = "true" ]; then
-        for _ in $(seq 1 5);do
-            #checkbox-cli submit -m "$PREFIX_SUBMISSION"_"$PLAN" "$SECURE_ID" "$tarball"
-            if checkbox-cli submit -m "$PREFIX_SUBMISSION"_"$PLAN" "$SECURE_ID" "$tarball" == 0; then
-                echo 'Upload to C3 succesfully'
-                break
-            else
-                sleep 3
-                echo 'Try to upload to C3 again'
-            fi
-        done
-    fi
 
     # Auto report bugs
     if [ "$AUTO_CREATE_BUGS" = "true" ]; then
         echo "DRY: auto create bugs is true"
         echo "ASSIGNE: $AUTO_CREATE_BUGS_ASSIGNEE"
+
     #    SKU=[% env['CID'] %]
     #    [ -n "[% env['DEVICE_SKU'] %]" ] && SKU=[% env['DEVICE_SKU'] %]
     #    git clone --depth 1 lp:~oem-solutions-group/lyoncore/+git/oem-sanity
@@ -83,16 +72,14 @@ fi
 mkdir -p artifacts
 mv /home/ubuntu/.local/share/checkbox-ng/submission_*.html artifacts/submission.html
 mv /home/ubuntu/.local/share/checkbox-ng/submission_*.junit.xml artifacts/junit.xml
-#mv /home/ubuntu/.local/share/checkbox-ng/submission_*.xml artifacts/submission.xml
-#mv /home/ubuntu/.local/share/checkbox-ng/submission_*.xlsx artifacts/submission.xlsx
 mv /home/ubuntu/.local/share/checkbox-ng/submission_*.tar.xz artifacts/submission.tar.xz
 mv /home/ubuntu/c3-local-submission.tar.xz artifacts/submission.tar.xz
 tar -xf artifacts/submission.tar.xz submission.json
 mv submission.json artifacts/
-_run ubuntu-report show > /tmp/ubuntu-report.log
-_get /tmp/ubuntu-report.log
-jq -r .OEM.DCD < ubuntu-report.log
-mv ubuntu-report.log artifacts
+#_run ubuntu-report show > /tmp/ubuntu-report.log
+#_get /tmp/ubuntu-report.log
+#jq -r .OEM.DCD < ubuntu-report.log
+#mv ubuntu-report.log artifacts
 
 
 echo "Files in artifacts:"
