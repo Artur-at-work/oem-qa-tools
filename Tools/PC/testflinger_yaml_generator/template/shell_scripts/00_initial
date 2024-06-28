@@ -51,12 +51,12 @@ echo
 # If we always update the DUT's version, then agent gets the same from beta?
 # why checkout to specific version? is it for edge channel?
 
-CHECKBOX_VERSION=$(_run $CHECKBOX_CLI_CMD --version)
-echo "$CHECKBOX_VERSION"
-git clone --depth=1 https://github.com/canonical/hwcert-jenkins-tools.git > /dev/null
-git clone --filter=tree:0 https://github.com/canonical/checkbox.git > /dev/null
-hwcert-jenkins-tools/version-published/checkout_to_version.py ~/checkbox "$CHECKBOX_VERSION"
-(cd checkbox/checkbox-ng || return; sudo python3 setup.py install > /dev/null)
+#CHECKBOX_VERSION=$(_run $CHECKBOX_CLI_CMD --version)
+#echo "$CHECKBOX_VERSION"
+#git clone --depth=1 https://github.com/canonical/hwcert-jenkins-tools.git > /dev/null
+#git clone --filter=tree:0 https://github.com/canonical/checkbox.git > /dev/null
+#hwcert-jenkins-tools/version-published/checkout_to_version.py ~/checkbox "$CHECKBOX_VERSION"
+#(cd checkbox/checkbox-ng || return; sudo python3 setup.py install > /dev/null)
 
 _run sudo amixer set Master unmute
 _run sudo amixer set Master 100
