@@ -1,8 +1,7 @@
 set -x
 sudo add-apt-repository ppa:checkbox-dev/beta -y
 sudo apt-get update
-export DEBIAN_FRONTEND=noninteractive
-sudo apt-get install jq openssh-server checkbox-ng checkbox-provider-certification-client -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install jq openssh-server checkbox-ng checkbox-provider-certification-client -y
 
 TARGET_DEVICE_USERNAME=ubuntu
 # convenience functions
