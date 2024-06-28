@@ -9,8 +9,6 @@ PLAN="$(grep -r 'unit = com.canonical.certification' $LAUNCHER_PATH | cut -d ':'
 PREFIX_SUBMISSION="$(grep 'session_desc' $LAUNCHER_PATH | cut -d'=' -f2- | awk '{print $1}' | xargs)"
 CID="$(grep 'job_queue' $LAUNCHER_PATH | cut -d':' -f2- | awk '{print $1}' | xargs)"
 
-find / -name checkbox-launcher
-
 PYTHONUNBUFFERED=1 checkbox-cli remote "$DEVICE_IP" checkbox-launcher
 EXITCODE=$?
 echo EXITCODE: "$EXITCODE"

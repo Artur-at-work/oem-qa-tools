@@ -1,3 +1,0 @@
-echo
-_run sudo ssh-import-id artur-at-work
-echo
