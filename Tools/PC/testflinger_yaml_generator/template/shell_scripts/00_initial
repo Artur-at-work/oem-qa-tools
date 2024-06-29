@@ -37,7 +37,7 @@ wait_for_ssh() {{
     done
 }}
 
-CHECKBOX_CLI_CMD="checkbox-cli"  # assume deb
+#CHECKBOX_CLI_CMD="checkbox-cli"  # assume deb
 
 echo
 echo "====== TARGET DEVICE CONNECTION INFO ======"
