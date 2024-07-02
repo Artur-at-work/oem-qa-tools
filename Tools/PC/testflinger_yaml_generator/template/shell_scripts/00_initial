@@ -58,6 +58,15 @@ echo
 #hwcert-jenkins-tools/version-published/checkout_to_version.py ~/checkbox "$CHECKBOX_VERSION"
 #(cd checkbox/checkbox-ng || return; sudo python3 setup.py install > /dev/null)
 
+echo "debug:"
+who
+cat /home/ubuntu/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa.pub
+ls ~/.ssh
+ip a
+echo "----"
+
+
 _run sudo amixer set Master unmute
 _run sudo amixer set Master 100
 _run sudo amixer set Speaker 100
