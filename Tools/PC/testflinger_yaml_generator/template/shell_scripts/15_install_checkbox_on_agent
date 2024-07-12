@@ -7,15 +7,6 @@ sudo apt update
 sudo DEBIAN_FRONTEND=noninteractive apt install -yqq checkbox-ng
 
 echo "Installing checkbox in agent container"
-# shellcheck disable=SC2050
-if [ "False" == False ]; then
-  # if we are testing using debs on the dut
-  CHECKBOX_CLI_CMD="checkbox-cli"
-else
-  # we are testing using snaps on the dut
-  CHECKBOX_CLI_CMD="checkbox.checkbox-cli"
-fi
-
 CHECKBOX_VERSION=$(_run $CHECKBOX_CLI_CMD --version)
 git clone --depth=1 https://github.com/canonical/hwcert-jenkins-tools.git > /dev/null
 git clone --filter=tree:0 https://github.com/canonical/checkbox.git > /dev/null
